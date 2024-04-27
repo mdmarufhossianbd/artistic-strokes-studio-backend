@@ -3,7 +3,8 @@ const cors = require('cors');
 require('dotenv').config();
 const {
   MongoClient,
-  ServerApiVersion
+  ServerApiVersion,
+  ObjectId
 } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
@@ -40,6 +41,20 @@ async function run() {
       const cursor = categoryCollection.find();
       const result = await cursor.toArray();
       res.send(result);
+    })
+
+    // item get for details
+    app.get('/paintings-and-drawings/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await paintingAndDrawingCollection.findOne(query);
+      res.send(result);
+    })
+
+    // item get for user
+    app.get('/user-added/:email', async(req, res) => {   
+      const result = await paintingAndDrawingCollection.find({email:req.params.email}).toArray();
+      res.send(result);      
     })
 
     // item get form database
