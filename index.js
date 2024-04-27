@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const {
+  MongoClient,
+  ServerApiVersion
+} = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
@@ -9,7 +12,6 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-
 
 // mongoBD
 
@@ -33,31 +35,40 @@ async function run() {
     const paintingAndDrawingCollection = client.db('paintingAndDrawingDB').collection("paintingsanddrawings")
     const categoryCollection = client.db("categoryDB").collection("categories")
 
-    // data get
-    app.get('/category', async(req, res)=>{
-        const cursor = categoryCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
+    // category get
+    app.get('/category', async (req, res) => {
+      const cursor = categoryCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    // item get form database
+    app.get('/paintings-and-drawings', async (req, res) => {
+      const cursor = paintingAndDrawingCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
     })
 
     // item store in database
-    app.post('/paintings-and-drawings', async(req, res)=>{
+    app.post('/paintings-and-drawings', async (req, res) => {
       const paintingAndDrawingItem = req.body;
       // console.log(paintingAndDrawingItem);
       const result = await paintingAndDrawingCollection.insertOne(paintingAndDrawingItem);
       res.send(result);
     })
 
-    // data store
-    app.post('/category', async(req, res) => {
-        const categoryItem = req.body;
-        // console.log(categoryItem);
-        const result = await categoryCollection.insertOne(categoryItem);
-        res.send(result);
+    // category store
+    app.post('/category', async (req, res) => {
+      const categoryItem = req.body;
+      // console.log(categoryItem);
+      const result = await categoryCollection.insertOne(categoryItem);
+      res.send(result);
     })
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    await client.db("admin").command({
+      ping: 1
+    });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
@@ -66,17 +77,12 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-
-
-
-
 // server
 
-app.get('/', (req, res)=>{
-    res.send('Painting and Drawing server is running')
+app.get('/', (req, res) => {
+  res.send('Painting and Drawing server is running')
 })
 
-app.listen(port, ()=>{
-    console.log(`Painting and Drawing server is running on ${port}`);
+app.listen(port, () => {
+  console.log(`Painting and Drawing server is running on ${port}`);
 })
