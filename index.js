@@ -72,6 +72,14 @@ async function run() {
       res.send(result);
     })
 
+    // delete item in database
+    app.delete('/paintings-and-drawings/:id', async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)};
+      const result = await paintingAndDrawingCollection.deleteOne(query);
+      res.send(result);
+    })
+
     // category store
     app.post('/category', async (req, res) => {
       const categoryItem = req.body;
