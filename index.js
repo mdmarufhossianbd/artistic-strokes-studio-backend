@@ -56,6 +56,13 @@ async function run() {
       const result = await paintingAndDrawingCollection.find({email:req.params.email}).toArray();
       res.send(result);      
     })
+    
+    // item get for category
+    app.get('/category/:category', async(req, res)=>{
+      const category = {category : req.params.category}
+      const result = await paintingAndDrawingCollection.find(category).toArray();
+      res.send(result);
+    })
 
     // item get form database
     app.get('/paintings-and-drawings', async (req, res) => {
@@ -70,6 +77,29 @@ async function run() {
       // console.log(paintingAndDrawingItem);
       const result = await paintingAndDrawingCollection.insertOne(paintingAndDrawingItem);
       res.send(result);
+    })
+
+    // item update in database
+    app.put('/paintings-and-drawings/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id : new ObjectId(id)};
+      const options = {upsert: true};
+      const updateCraft = req.body;
+      const craft = {
+        $set: {
+          item_name: updateCraft.item_name,
+          photo : updateCraft.photo,
+          category : updateCraft.category,
+          price : updateCraft.price,
+          short_description : updateCraft.short_description,
+          rating : updateCraft.rating,
+          processing_time : updateCraft.processing_time,
+          customization : updateCraft.customization, 
+          stock : updateCraft.stock,
+        }
+      }
+      const result = await paintingAndDrawingCollection.updateOne(filter,craft, options);
+      res.send(result)
     })
 
     // delete item in database
